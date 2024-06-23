@@ -61,7 +61,7 @@ def omnideck_callback(odom_data):
     # Send the odometry data to the Socket.io server
     sio.emit('turtlebot_omnideck_event', odom_dict, namespace='/turtlebot_omnideck_namespace')
     print("sent to digital")
-
+    
 
 if __name__ == '__main__':
     try:

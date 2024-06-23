@@ -17,7 +17,7 @@ global desired_position, desired_orientation, model_name
 
 # @sio.event(namespace='/movement')
 # def actuateData(data):
-#     print(data)
+#     print(data)p
 #     move(data)
 GAZEBO_API_URL= "http://$HOST_IP:11346"
 
