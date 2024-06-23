@@ -103,6 +103,7 @@ def handle_sensed_data(sid,message):
 def handle_sensed_data(sid,message):
     sio.emit('gazeboData', message, namespace='/manga')
 
+
 #this is to send to the socketio the jointstates message for the arm 
 @sio.on('arm_event',namespace='/arm_namespace')
 def handle_sensed_data(sid,message):
@@ -137,7 +138,9 @@ def handle_sensed_data(sid,message):
     sio.emit('cam_callback', message, namespace='/camera_feed')
 
 
-
+@sio.on('turtlebot_odom_event',namespace='/turtlebot_odom_namespace')
+def handle_sensed_data(sid,message):
+    sio.emit('turtlebot_odom_data', message, namespace='/turtlebot_odom')
 
 
 def main(request):
