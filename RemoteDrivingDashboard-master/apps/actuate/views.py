@@ -143,6 +143,11 @@ def handle_sensed_data(sid,message):
     sio.emit('turtlebot_odom_data', message, namespace='/turtlebot_odom')
 
 
+@sio.on('turtlebot_omnideck_event',namespace='/turtlebot_omnideck_namespace')
+def handle_sensed_data(sid,message):
+    sio.emit('turtlebot_omnideck_data', message, namespace='/turtlebot_omnideck')
+
+
 def main(request):
     return render(request, "home/dashboard_layout.html")
     
