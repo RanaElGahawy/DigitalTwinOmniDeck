@@ -137,15 +137,12 @@ def handle_sensed_data(sid,message):
 def handle_sensed_data(sid,message):
     sio.emit('cam_callback', message, namespace='/camera_feed')
 
-
-@sio.on('turtlebot_odom_event',namespace='/turtlebot_odom_namespace')
+###### getting the omnideck position data
+@sio.on('omnideck_data_event',namespace='/omnideck_data_namespace')
 def handle_sensed_data(sid,message):
-    sio.emit('turtlebot_odom_data', message, namespace='/turtlebot_odom')
+    sio.emit('omnideck_data', message, namespace='/omnideck')
 
 
-@sio.on('turtlebot_omnideck_event',namespace='/turtlebot_omnideck_namespace')
-def handle_sensed_data(sid,message):
-    sio.emit('turtlebot_omnideck_data', message, namespace='/turtlebot_omnideck')
 
 
 def main(request):
