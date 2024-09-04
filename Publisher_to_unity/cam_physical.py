@@ -16,7 +16,7 @@ def usb_camera_publisher():
     image_pub = rospy.Publisher('/cam', CompressedImage, queue_size=10)  # Use CompressedImage for efficient data transfer
     bridge = CvBridge()
 
-    cap = cv2.VideoCapture(0)  # 0 for the default camera
+    cap = cv2.VideoCapture(1)  # 0 for the default camera
 
     if not cap.isOpened():
         rospy.logerr("Could not open USB camera.")
@@ -26,7 +26,7 @@ def usb_camera_publisher():
 
     rate = rospy.Rate(30)  # Adjust frame rate as needed
     counter = 0
-    while not rospy.is_shutdown():
+    while 1:
         ret, frame = cap.read()
         if ret:
             # Convert the frame to ROS CompressedImage message
@@ -39,34 +39,34 @@ def usb_camera_publisher():
             # Encode the frame to JPEG format
             success, encoded_image = cv2.imencode('.jpg', resized_frame)
             if success:
-                if counter ==0:
-                    rospy.logwarn("publish image.")
-                    ros_compressed_image.data = encoded_image.tobytes()
-                    ros_compressed_image_base64 = base64.b64encode(ros_compressed_image.data).decode('utf-8')
-                    #image_pub.publish(ros_compressed_image)
-                    try:
-                        sio.emit('cam_event', {'data': ros_compressed_image_base64}  ,namespace='/cam_namespace')
-                    except Exception as e:
-                        print("An error occurred while emitting the event:", e)
-                        sio.connect('http://192.168.81.194:8000', namespaces=['/cam_namespace'])
-                        sio.emit('cam_event', {'data': ros_compressed_image_base64}  ,namespace='/cam_namespace')
+                
+                rospy.logwarn("publish image.")
+                ros_compressed_image.data = encoded_image.tobytes()
+                ros_compressed_image_base64 = base64.b64encode(ros_compressed_image.data).decode('utf-8')
+                #image_pub.publish(ros_compressed_image)
+                try:
+                    sio.emit('cam_event', {'data': encoded_image.tobytes()}  ,namespace='/cam_namespace')
+                except Exception as e:
+                    print("An error occurred while emitting the event:", e)
+                    #sio.connect('http://100.67.96.27:8000', namespaces=['/cam_namespace'])
+                    sio.emit('cam_event', {'data': encoded_image}  ,namespace='/cam_namespace')
                     
-                else:
-                    rospy.logwarn("skip image.")
+                # else:
+                #     rospy.logwarn("skip image.")
                 
             else:
                 rospy.logwarn("Failed to encode frame to JPEG.")
         else:
             rospy.logwarn("Failed to read frame from USB camera.")
 
-        rate.sleep()
+        #rate.sleep()
 
     cap.release()
 
 if __name__ == '__main__':
     try:
         #usb_camera_publisher()
-        sio.connect('http://192.168.81.194:8000', namespaces=['/cam_namespace'])
+        sio.connect('http://100.67.96.27:8000', namespaces=['/cam_namespace'])
         usb_camera_publisher()
         while not rospy.is_shutdown():
             rospy.sleep(1)

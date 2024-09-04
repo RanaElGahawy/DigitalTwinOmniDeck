@@ -16,16 +16,17 @@ pub = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
 def unity_cmdvel_callback(data):
     twist = Twist()
 
-    twist.linear.x = data['linear']['x']
+    twist.linear.x = data['linear']['z']
     twist.linear.y = data['linear']['y']
-    twist.linear.z = data['linear']['z']
-    twist.angular.x = data['angular']['x']
+    twist.linear.z = data['linear']['x']
+    twist.angular.x = data['angular']['z']
     twist.angular.y = data['angular']['y']
-    twist.angular.z = data['angular']['z']
+    twist.angular.z = data['angular']['x']
     pub.publish(twist)
+    print(data)
 
 
 
 
-sio.connect('http://192.168.4.194:8000', namespaces=['/unity_cmdvel'])
+sio.connect('http://localhost:8000', namespaces=['/unity_cmdvel'])
 rospy.spin()

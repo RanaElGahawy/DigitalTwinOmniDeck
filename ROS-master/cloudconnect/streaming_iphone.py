@@ -9,6 +9,11 @@ import threading
 from gtts import gTTS
 from playsound import playsound
 
+
+import tempfile
+
+audio_lock = threading.Lock()
+
 class CVClient(object):
     def __init__(self, server_addr, stream_fps):
         self.server_addr = server_addr
@@ -81,12 +86,23 @@ def disconnect():
 @sio.on('omnideck_data', namespace='/omnideck')
 
 def omnideck_data(data):
-   # print("received "+ str(data))
-    text = "move" + data
-    tts = gTTS(text)
-    tts.save("speech.mp3")
-    playsound("speech.mp3")
-    os.remove("speech.mp3")
+    
+    if data.strip(): 
+        print('Received data from omnideck:', data)
+        text = "move" + "".join(data)        
+        with tempfile.NamedTemporaryFile(suffix=".mp3", delete=False) as tmp_file:
+            tts = gTTS(text)
+            tts.save(tmp_file.name)
+            tmp_file_name = tmp_file.name
+        
+        with audio_lock:
+            try:
+                playsound(tmp_file_name)
+            except Exception as e:
+                print("Error playing sound:", str(e))
+            finally:
+                os.remove(tmp_file_name)
+
 
 if __name__ == '__main__':
     # Establish the connection
