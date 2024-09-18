@@ -79,10 +79,14 @@ def disconnect_cv(sid):
 @sio.on('cv2server',namespace='/cv')
 def handle_cv_message_digital(sid,message):
     sio.emit('server2webvirtual', message, namespace='/web')
+    sio.emit('doglowcamera', message, namespace='/unity_cmdvel_namespace')
+
 
 @sio.on('cv2serverphysical',namespace='/cv')
 def handle_cv_message_physical(sid,message):
     sio.emit('server2webphysical', message, namespace='/web')
+    sio.emit('dogcamera', message, namespace='/unity_cmdvel_namespace')
+
 
 #dashboard
 @sio.on('connect', namespace='/dashboard')
